@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart";
 import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
+import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
 import { Progress } from "@/components/ui/progress";
 
 const ServiceOperations = () => {
@@ -163,6 +163,10 @@ const ServiceOperations = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+        
+        <div className="mb-8">
+          <ServiceEngineerActivity region={selectedRegion} />
         </div>
         
         <Card>
