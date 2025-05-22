@@ -30,7 +30,7 @@ const EmailDigest = () => {
   const handleSendNow = () => {
     toast({
       title: "Digest Email Sent",
-      description: `Email sent to ${recipients.split(",").length} recipients`,
+      description: `Email digest sent to ${recipients.split(",").length} recipients`,
     });
   };
 
