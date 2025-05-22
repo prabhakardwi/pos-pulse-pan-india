@@ -16,7 +16,8 @@ const EmailDigest = () => {
     "service-summary", 
     "tat-performance", 
     "inventory-health", 
-    "regional-metrics"
+    "regional-metrics",
+    "engineer-activity"
   ]);
 
   const handleMetricToggle = (metric: string) => {

@@ -6,6 +6,7 @@ import { Mail } from "lucide-react";
 import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
 import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart";
 import { RegionalServiceMetrics } from "@/components/dashboard/RegionalServiceMetrics";
+import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
 
 interface DigestPreviewProps {
   selectedMetrics: string[];
@@ -76,6 +77,18 @@ export const DigestPreview: React.FC<DigestPreviewProps> = ({
             </div>
           )}
           
+          {/* Service Engineer Activity */}
+          {selectedMetrics.includes("engineer-activity") && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-4 text-slate-800 border-b pb-2">Service Engineer Activity</h3>
+              <div className="bg-slate-50 rounded p-4 mb-4">
+                <div className="h-auto">
+                  <ServiceEngineerActivity region="all" />
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* TAT Performance */}
           {selectedMetrics.includes("tat-performance") && (
             <div className="mb-8">
