@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,10 +8,14 @@ import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart"
 import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
 import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
 import { Progress } from "@/components/ui/progress";
+import { InventoryStatusChart } from "@/components/dashboard/InventoryStatusChart";
+import { RegionalServiceMetrics } from "@/components/dashboard/RegionalServiceMetrics";
+import { Badge } from "@/components/ui/badge";
 
 const ServiceOperations = () => {
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedTab, setSelectedTab] = useState("installation");
+  const [selectedSection, setSelectedSection] = useState("service");
   
   // Mock data for service operations
   const serviceData = {
@@ -44,6 +49,15 @@ const ServiceOperations = () => {
     }
   };
   
+  // Mock data for inventory status
+  const inventorySummary = {
+    fresh: 550,
+    repair: 115,
+    engineer: 155,
+    bad: 51,
+    total: 871
+  };
+  
   const currentService = serviceData[selectedTab as keyof typeof serviceData];
   
   return (
@@ -51,8 +65,8 @@ const ServiceOperations = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">Service Operations</h1>
-            <p className="text-slate-500">Monitor and manage all POS terminal services</p>
+            <h1 className="text-2xl font-bold text-slate-800 mb-2">POS Operations Dashboard</h1>
+            <p className="text-slate-500">Comprehensive monitor of service operations and inventory health</p>
           </div>
           <div className="mt-4 md:mt-0 flex items-center">
             <Select value={selectedRegion} onValueChange={setSelectedRegion}>
@@ -71,167 +85,364 @@ const ServiceOperations = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card className={selectedTab === "installation" ? "ring-2 ring-primary" : ""} 
-                onClick={() => setSelectedTab("installation")}>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800">{serviceData.installation.completed}</div>
-                <p className="text-sm text-slate-500">Installations</p>
-                <div className="mt-2 text-xs text-slate-500">
-                  {serviceData.installation.pending} Pending
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <Tabs value={selectedSection} onValueChange={setSelectedSection} className="mb-6">
+          <TabsList className="mb-4">
+            <TabsTrigger value="service">Service Operations</TabsTrigger>
+            <TabsTrigger value="inventory">Inventory Status</TabsTrigger>
+            <TabsTrigger value="combined">Combined View</TabsTrigger>
+          </TabsList>
           
-          <Card className={selectedTab === "deinstallation" ? "ring-2 ring-primary" : ""}
-                onClick={() => setSelectedTab("deinstallation")}>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800">{serviceData.deinstallation.completed}</div>
-                <p className="text-sm text-slate-500">Deinstallations</p>
-                <div className="mt-2 text-xs text-slate-500">
-                  {serviceData.deinstallation.pending} Pending
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className={selectedTab === "reactivation" ? "ring-2 ring-primary" : ""}
-                onClick={() => setSelectedTab("reactivation")}>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800">{serviceData.reactivation.completed}</div>
-                <p className="text-sm text-slate-500">Reactivations</p>
-                <div className="mt-2 text-xs text-slate-500">
-                  {serviceData.reactivation.pending} Pending
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className={selectedTab === "maintenance" ? "ring-2 ring-primary" : ""}
-                onClick={() => setSelectedTab("maintenance")}>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-slate-800">{serviceData.maintenance.completed}</div>
-                <p className="text-sm text-slate-500">Maintenance</p>
-                <div className="mt-2 text-xs text-slate-500">
-                  {serviceData.maintenance.pending} Pending
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>{selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)} Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <div className="text-sm font-medium text-slate-500 mb-1">TAT Compliance</div>
-                  <div className="flex items-end">
-                    <span className="text-2xl font-bold mr-2">{currentService.tatRate}%</span>
-                    <span className="text-sm text-green-600">Within Target</span>
+          <TabsContent value="service">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <Card className={selectedTab === "installation" ? "ring-2 ring-primary cursor-pointer" : "cursor-pointer"} 
+                    onClick={() => setSelectedTab("installation")}>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{serviceData.installation.completed}</div>
+                    <p className="text-sm text-slate-500">Installations</p>
+                    <div className="mt-2 text-xs text-slate-500">
+                      {serviceData.installation.pending} Pending
+                    </div>
                   </div>
-                  <Progress value={currentService.tatRate} className="h-2 mt-2" />
-                </div>
-                
-                <div>
-                  <div className="text-sm font-medium text-slate-500 mb-1">Average Time</div>
-                  <div className="text-2xl font-bold">{currentService.avgTime}</div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
               
-              <div className="pt-4">
-                <TatPerformanceChart region={selectedRegion} />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Service Overview by Region</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
-                <ServiceTypeSummary region={selectedRegion} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="mb-8">
-          <ServiceEngineerActivity region={selectedRegion} />
-        </div>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Service Activities</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-md border">
-              <div className="bg-slate-50 p-3 font-medium">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>Request ID</div>
-                  <div>Type</div>
-                  <div>Location</div>
-                  <div>Status</div>
-                  <div>Date</div>
-                </div>
-              </div>
-              <div className="p-3 border-t">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>REQ-7825</div>
-                  <div>Installation</div>
-                  <div>Mumbai, West</div>
-                  <div className="text-green-600">Completed</div>
-                  <div>May 21, 2025</div>
-                </div>
-              </div>
-              <div className="p-3 border-t">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>REQ-7824</div>
-                  <div>Maintenance</div>
-                  <div>Delhi, North</div>
-                  <div className="text-green-600">Completed</div>
-                  <div>May 21, 2025</div>
-                </div>
-              </div>
-              <div className="p-3 border-t">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>REQ-7823</div>
-                  <div>Deinstallation</div>
-                  <div>Chennai, South</div>
-                  <div className="text-amber-600">In Progress</div>
-                  <div>May 21, 2025</div>
-                </div>
-              </div>
-              <div className="p-3 border-t">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>REQ-7822</div>
-                  <div>Reactivation</div>
-                  <div>Kolkata, East</div>
-                  <div className="text-amber-600">In Progress</div>
-                  <div>May 21, 2025</div>
-                </div>
-              </div>
-              <div className="p-3 border-t">
-                <div className="grid grid-cols-5 gap-2">
-                  <div>REQ-7821</div>
-                  <div>Installation</div>
-                  <div>Bangalore, South</div>
-                  <div className="text-red-600">Delayed</div>
-                  <div>May 20, 2025</div>
-                </div>
-              </div>
+              <Card className={selectedTab === "deinstallation" ? "ring-2 ring-primary cursor-pointer" : "cursor-pointer"}
+                    onClick={() => setSelectedTab("deinstallation")}>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{serviceData.deinstallation.completed}</div>
+                    <p className="text-sm text-slate-500">Deinstallations</p>
+                    <div className="mt-2 text-xs text-slate-500">
+                      {serviceData.deinstallation.pending} Pending
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className={selectedTab === "reactivation" ? "ring-2 ring-primary cursor-pointer" : "cursor-pointer"}
+                    onClick={() => setSelectedTab("reactivation")}>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{serviceData.reactivation.completed}</div>
+                    <p className="text-sm text-slate-500">Reactivations</p>
+                    <div className="mt-2 text-xs text-slate-500">
+                      {serviceData.reactivation.pending} Pending
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className={selectedTab === "maintenance" ? "ring-2 ring-primary cursor-pointer" : "cursor-pointer"}
+                    onClick={() => setSelectedTab("maintenance")}>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{serviceData.maintenance.completed}</div>
+                    <p className="text-sm text-slate-500">Maintenance</p>
+                    <div className="mt-2 text-xs text-slate-500">
+                      {serviceData.maintenance.pending} Pending
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </CardContent>
-        </Card>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)} Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <div className="text-sm font-medium text-slate-500 mb-1">TAT Compliance</div>
+                      <div className="flex items-end">
+                        <span className="text-2xl font-bold mr-2">{currentService.tatRate}%</span>
+                        <span className="text-sm text-green-600">Within Target</span>
+                      </div>
+                      <Progress value={currentService.tatRate} className="h-2 mt-2" />
+                    </div>
+                    
+                    <div>
+                      <div className="text-sm font-medium text-slate-500 mb-1">Average Time</div>
+                      <div className="text-2xl font-bold">{currentService.avgTime}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4">
+                    <TatPerformanceChart region={selectedRegion} />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Service Overview by Region</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    <ServiceTypeSummary region={selectedRegion} />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="mb-8">
+              <ServiceEngineerActivity region={selectedRegion} />
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Regional Performance Metrics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[400px]">
+                  <RegionalServiceMetrics />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="inventory">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{inventorySummary.fresh}</div>
+                    <p className="text-sm text-slate-500">Fresh Inventory</p>
+                    <Badge className="mt-2 bg-green-500 hover:bg-green-600">Available</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{inventorySummary.repair}</div>
+                    <p className="text-sm text-slate-500">In Repair</p>
+                    <Badge className="mt-2 bg-yellow-500 hover:bg-yellow-600">In Process</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{inventorySummary.engineer}</div>
+                    <p className="text-sm text-slate-500">With Engineers</p>
+                    <Badge className="mt-2 bg-blue-500 hover:bg-blue-600">Assigned</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{inventorySummary.bad}</div>
+                    <p className="text-sm text-slate-500">Bad Inventory</p>
+                    <Badge className="mt-2 bg-red-500 hover:bg-red-600">Issue</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Tabs defaultValue="hub" className="mb-8">
+              <TabsList className="mb-4">
+                <TabsTrigger value="hub">Hub Inventory</TabsTrigger>
+                <TabsTrigger value="repair">Repair Center</TabsTrigger>
+                <TabsTrigger value="engineer">Service Engineer</TabsTrigger>
+                <TabsTrigger value="bad">Bad Inventory</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="hub">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hub Inventory Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <InventoryStatusChart type="hub" region={selectedRegion} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="repair">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Repair Center Inventory</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <InventoryStatusChart type="repair" region={selectedRegion} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="engineer">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Service Engineer Inventory</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <InventoryStatusChart type="engineer" region={selectedRegion} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="bad">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Bad Inventory Details</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[400px]">
+                      <InventoryStatusChart type="bad" region={selectedRegion} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+          
+          <TabsContent value="combined">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <Card className={selectedTab === "installation" ? "ring-2 ring-primary cursor-pointer" : "cursor-pointer"} 
+                    onClick={() => setSelectedTab("installation")}>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{serviceData.installation.completed}</div>
+                    <p className="text-sm text-slate-500">Installations</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{inventorySummary.fresh}</div>
+                    <p className="text-sm text-slate-500">Fresh Inventory</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">{currentService.tatRate}%</div>
+                    <p className="text-sm text-slate-500">TAT Compliance</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-slate-800">85</div>
+                    <p className="text-sm text-slate-500">Active Engineers</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Regional Service Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[350px]">
+                    <RegionalServiceMetrics />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Inventory Distribution</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[350px]">
+                    <InventoryStatusChart type="hub" region={selectedRegion} />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <ServiceEngineerActivity region={selectedRegion} />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>TAT Performance</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[300px]">
+                    <TatPerformanceChart region={selectedRegion} />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Service Activities</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <div className="bg-slate-50 p-3 font-medium">
+                    <div className="grid grid-cols-5 gap-2">
+                      <div>Request ID</div>
+                      <div>Type</div>
+                      <div>Location</div>
+                      <div>Status</div>
+                      <div>Date</div>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t">
+                    <div className="grid grid-cols-5 gap-2">
+                      <div>REQ-7825</div>
+                      <div>Installation</div>
+                      <div>Mumbai, West</div>
+                      <div className="text-green-600">Completed</div>
+                      <div>May 22, 2025</div>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t">
+                    <div className="grid grid-cols-5 gap-2">
+                      <div>REQ-7824</div>
+                      <div>Maintenance</div>
+                      <div>Delhi, North</div>
+                      <div className="text-green-600">Completed</div>
+                      <div>May 22, 2025</div>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t">
+                    <div className="grid grid-cols-5 gap-2">
+                      <div>REQ-7823</div>
+                      <div>Deinstallation</div>
+                      <div>Chennai, South</div>
+                      <div className="text-amber-600">In Progress</div>
+                      <div>May 22, 2025</div>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t">
+                    <div className="grid grid-cols-5 gap-2">
+                      <div>REQ-7822</div>
+                      <div>Reactivation</div>
+                      <div>Kolkata, East</div>
+                      <div className="text-amber-600">In Progress</div>
+                      <div>May 22, 2025</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
