@@ -1,14 +1,17 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Mail, Calendar, MapPin, User, Clock, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
 import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart";
 import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
 import { RegionalServiceMetrics } from "@/components/dashboard/RegionalServiceMetrics";
+import { InventoryStatusChart } from "@/components/dashboard/InventoryStatusChart";
 import { useNavigate } from 'react-router-dom';
 
 const ServiceOperations = () => {
