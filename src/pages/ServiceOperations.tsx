@@ -1,18 +1,18 @@
-
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart";
-import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
-import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
-import { Progress } from "@/components/ui/progress";
-import { InventoryStatusChart } from "@/components/dashboard/InventoryStatusChart";
-import { RegionalServiceMetrics } from "@/components/dashboard/RegionalServiceMetrics";
 import { Badge } from "@/components/ui/badge";
+import { Mail, Calendar, MapPin, User, Clock, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { ServiceTypeSummary } from "@/components/dashboard/ServiceTypeSummary";
+import { TatPerformanceChart } from "@/components/dashboard/TatPerformanceChart";
+import { ServiceEngineerActivity } from "@/components/dashboard/ServiceEngineerActivity";
+import { RegionalServiceMetrics } from "@/components/dashboard/RegionalServiceMetrics";
+import { useNavigate } from 'react-router-dom';
 
 const ServiceOperations = () => {
+  const navigate = useNavigate();
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedTab, setSelectedTab] = useState("installation");
   const [selectedSection, setSelectedSection] = useState("service");
@@ -63,26 +63,18 @@ const ServiceOperations = () => {
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">POS Operations Dashboard</h1>
-            <p className="text-slate-500">Comprehensive monitor of service operations and inventory health</p>
+            <h1 className="text-2xl font-bold text-slate-800 mb-2">Service Operations</h1>
+            <p className="text-slate-500">Monitor and manage POS terminal service operations across regions</p>
           </div>
-          <div className="mt-4 md:mt-0 flex items-center">
-            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select region" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Regions</SelectItem>
-                <SelectItem value="north">North</SelectItem>
-                <SelectItem value="south">South</SelectItem>
-                <SelectItem value="east">East</SelectItem>
-                <SelectItem value="west">West</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" className="ml-2">Export Report</Button>
-          </div>
+          <Button 
+            onClick={() => navigate('/email-digest')}
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Email Digest
+          </Button>
         </div>
         
         <Tabs value={selectedSection} onValueChange={setSelectedSection} className="mb-6">
