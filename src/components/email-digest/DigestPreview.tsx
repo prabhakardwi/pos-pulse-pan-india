@@ -146,8 +146,8 @@ export const DigestPreview: React.FC<DigestPreviewProps> = ({
           {selectedMetrics.includes("regional-metrics") && (
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4 text-slate-800 border-b pb-2">Regional Performance</h3>
-              <div className="bg-slate-50 rounded p-4 mb-4">
-                <div className="h-72">
+              <div className="bg-slate-50 rounded p-6">
+                <div className="w-full overflow-hidden" style={{ height: '450px' }}>
                   <RegionalServiceMetrics />
                 </div>
               </div>
